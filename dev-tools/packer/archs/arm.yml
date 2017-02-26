@@ -1,0 +1,4 @@
+arch: arm
+deb_arch: arm
+rpm_arch: arm
+bin_arch: arm
