@@ -45,7 +45,7 @@ PROCESSES?= 4
 TIMEOUT?= 90
 TEST_ENVIRONMENT?=false ## @testing if true, "make testsuite" runs integration tests and system tests in a dockerized test environment
 SYSTEM_TESTS?=false ## @testing if true, "make test" and "make testsuite" run unit tests and system tests
-GOX_OS?=linux darwin windows solaris freebsd netbsd openbsd ## @Building List of all OS to be supported by "make crosscompile".
+GOX_OS?=linux ## @Building List of all OS to be supported by "make crosscompile".
 TESTING_ENVIRONMENT?=snapshot ## @testing The name of the environment under test
 DOCKER_COMPOSE_PROJECT_NAME?=${BEATNAME}_${TESTING_ENVIRONMENT} ## @testing The name of the docker-compose project used by the integration and system tests
 DOCKER_COMPOSE?=TESTING_ENVIRONMENT=${TESTING_ENVIRONMENT} docker-compose -p ${DOCKER_COMPOSE_PROJECT_NAME} -f docker-compose.yml
@@ -55,12 +55,12 @@ PYTHON_ENV?=${BUILD_DIR}/python-env
 BUILDID?=$(shell git rev-parse HEAD) ## @Building The build ID
 VIRTUALENV_PARAMS?=
 INTEGRATION_TESTS?=
-CGO?=false ## @building if true, Build with C Go support
+CGO?=true ## @building if true, Build with C Go support
 
 # Cross compiling targets
-TARGETS?="linux/amd64 linux/386 windows/amd64 windows/386 darwin/amd64" ## @building list of platforms/architecture to be built by "make package"
+TARGETS?="linux/386 linux/amd64 linux/arm linux/arm64 linux/mips linux/mips64 linux/mipsle linux/mips64le linux/ppc64le" ## @building list of platforms/architecture to be built by "make package"
 TARGETS_OLD?="" ## @building list of Debian6 architecture to be built by "make package" when CGO is true
-PACKAGES?=${BEATNAME}/deb ${BEATNAME}/rpm ${BEATNAME}/darwin ${BEATNAME}/win ${BEATNAME}/bin ## @Building List of OS to be supported by "make package"
+PACKAGES?=${BEATNAME}/deb ${BEATNAME}/rpm ${BEATNAME}/bin ## @Building List of OS to be supported by "make package"
 SNAPSHOT?=yes ## @Building If yes, builds a snapshot version
 BEATS_BUILDER_IMAGE?=tudorg/beats-builder ## @Building Name of the docker image to use when packaging the application
 BEATS_BUILDER_DEB6_IMAGE?=tudorg/beats-builder-deb6 ## @Building Name of the docker image to use when packaging the application for Debian 6
@@ -368,20 +368,6 @@ prepare-package-cgo:
 		-e TARGETS=${TARGETS} \
 		-e BUILDID=${BUILDID} \
 		${BEATS_BUILDER_IMAGE} \
-		${BEAT_DIR}
-
-	# linux builds on debian 6 for compatibility
-	docker run --rm \
-		-v ${BUILD_DIR}:/build \
-		-v $(abspath ${ES_BEATS}/dev-tools/packer/xgo-scripts):/scripts \
-		-v $(abspath ${PACKER_TEMPLATES_DIR}):/templates \
-		-v $(abspath ..):/source \
-		-e PACK=${BEATNAME} \
-		-e BEFORE_BUILD=before_build.sh \
-		-e SOURCE=/source \
-		-e TARGETS=${TARGETS_OLD} \
-		-e BUILDID=${BUILDID} \
-		${BEATS_BUILDER_DEB6_IMAGE} \
 		${BEAT_DIR}
 
 # Prepares images for packaging
