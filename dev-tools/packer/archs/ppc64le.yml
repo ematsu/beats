@@ -1,0 +1,4 @@
+arch: ppc64le
+deb_arch: ppc64le
+rpm_arch: ppc64le
+bin_arch: ppc64le

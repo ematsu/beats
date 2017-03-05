@@ -1,0 +1,4 @@
+arch: mips
+deb_arch: mips
+rpm_arch: mips
+bin_arch: mips

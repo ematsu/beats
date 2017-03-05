@@ -1,0 +1,4 @@
+arch: mips64le
+deb_arch: mips64le
+rpm_arch: mips64le
+bin_arch: mips64le

@@ -1,0 +1,4 @@
+arch: mipsle
+deb_arch: mipsle
+rpm_arch: mipsle
+bin_arch: mipsle

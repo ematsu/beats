@@ -39,7 +39,7 @@ PROCESSES?= 4
 TIMEOUT?= 90
 TEST_ENVIRONMENT?=false
 SYSTEM_TESTS?=false
-GOX_OS?=linux darwin windows solaris freebsd netbsd openbsd
+GOX_OS?=linux
 TESTING_ENVIRONMENT?=snapshot
 DOCKER_COMPOSE?=docker-compose -f ${PWD}/../testing/environments/base.yml -f ${PWD}/../testing/environments/${TESTING_ENVIRONMENT}.yml -f docker-compose.yml
 DOCKER_CACHE?=1 # If set to 0, all docker images are created without cache
@@ -47,13 +47,13 @@ GOPACKAGES_COMMA_SEP=$(subst $(space),$(comma),$(strip ${GOPACKAGES}))
 PYTHON_ENV?=${BUILD_DIR}/python-env
 BUILDID?=$(shell git rev-parse HEAD)
 
-CGO?=false
+CGO?=true
 
 # Cross compiling targets
-TARGETS?="linux/amd64 linux/386 windows/amd64 windows/386 darwin/amd64"
+TARGETS?="linux/386 linux/amd64 linux/arm linux/arm64 linux/mips linux/mips64 linux/mipsle linux/mips64le linux/ppc64le"
 # Cross compiling targets to be build on debian 6. This only applies if CGO is enabled
 TARGETS_OLD?=""
-PACKAGES?=${BEATNAME}/deb ${BEATNAME}/rpm ${BEATNAME}/darwin ${BEATNAME}/win ${BEATNAME}/bin
+PACKAGES?=${BEATNAME}/deb ${BEATNAME}/rpm ${BEATNAME}/bin
 SNAPSHOT?=yes
 
 ifeq ($(DOCKER_CACHE),0)
@@ -353,19 +353,6 @@ prepare-package-cgo:
 		-e TARGETS=${TARGETS} \
 		-e BUILDID=${BUILDID} \
 		tudorg/beats-builder \
-		${BEAT_DIR}
-
-	# linux builds on debian 6 for compatibility
-	docker run --rm \
-		-v ${BUILD_DIR}:/build \
-		-v $(abspath ${ES_BEATS}/dev-tools/packer/xgo-scripts):/scripts \
-		-v $(abspath ..):/source \
-		-e PACK=${BEATNAME} \
-		-e BEFORE_BUILD=before_build.sh \
-		-e SOURCE=/source \
-		-e TARGETS=${TARGETS_OLD} \
-		-e BUILDID=${BUILDID} \
-		tudorg/beats-builder-deb6 \
 		${BEAT_DIR}
 
 # Prepares images for packaging

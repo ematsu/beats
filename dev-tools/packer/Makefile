@@ -6,29 +6,42 @@ packer_absdir=$(shell dirname ${makefile_abspath})
 beat_abspath=${GOPATH}/src/${BEAT_DIR}
 
 
-%/deb: ${BUILD_DIR}/god-linux-386 ${BUILD_DIR}/god-linux-amd64 fpm-image
+%/deb: ${BUILD_DIR}/god-linux-386 ${BUILD_DIR}/god-linux-amd64 ${BUILD_DIR}/god-linux-arm ${BUILD_DIR}/god-linux-arm64 ${BUILD_DIR}/god-linux-mips ${BUILD_DIR}/god-linux-mips64 fpm-image
 	echo Creating DEB packages for $(@D)
 	ARCH=386 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/debian/build.sh
 	ARCH=amd64 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/debian/build.sh
+	ARCH=arm BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/debian/build.sh
+	ARCH=arm64 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/debian/build.sh
+	ARCH=mips BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/debian/build.sh
+	ARCH=mips64 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/debian/build.sh
+	ARCH=mipsle BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/debian/build.sh
+	ARCH=mips64le BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/debian/build.sh
+	ARCH=ppc64le BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/debian/build.sh
 
-%/rpm: ${BUILD_DIR}/god-linux-386 ${BUILD_DIR}/god-linux-amd64 fpm-image
+%/rpm: ${BUILD_DIR}/god-linux-386 ${BUILD_DIR}/god-linux-amd64 ${BUILD_DIR}/god-linux-arm ${BUILD_DIR}/god-linux-arm64 ${BUILD_DIR}/god-linux-mips ${BUILD_DIR}/god-linux-mips64 fpm-image
 	echo Creating RPM packages for $(@D)
 	ARCH=386 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/centos/build.sh
 	ARCH=amd64 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/centos/build.sh
-
-%/darwin:
-	echo Creating Darwin packages for $(@D)
-	ARCH=amd64 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/darwin/build.sh
-
-%/win:
-	echo Creating Darwin packages for $(@D)
-	ARCH=386 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/windows/build.sh
-	ARCH=amd64 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/windows/build.sh
+	ARCH=arm BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/centos/build.sh
+	ARCH=arm64 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/centos/build.sh
+	ARCH=mips BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/centos/build.sh
+	ARCH=mips64 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/centos/build.sh
+	ARCH=mipsle BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/centos/build.sh
+	ARCH=mips64le BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/centos/build.sh
+	ARCH=ppc64le BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/centos/build.sh
 
 %/bin:
 	echo Creating Linux packages for $(@D)
 	ARCH=386 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/binary/build.sh
 	ARCH=amd64 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/binary/build.sh
+	ARCH=arm BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/binary/build.sh
+	ARCH=arm64 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/binary/build.sh
+	ARCH=mips BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/binary/build.sh
+	ARCH=mips64 BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/binary/build.sh
+	ARCH=mipsle BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/binary/build.sh
+	ARCH=mips64le BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/binary/build.sh
+	ARCH=ppc64le BEAT=$(@D) BUILD_DIR=${BUILD_DIR} BEAT_DIR=$(beat_abspath) BUILDID=$(BUILDID) SNAPSHOT=$(SNAPSHOT) $(packer_absdir)/platforms/binary/build.sh
+
 
 .PHONY: package-dashboards
 package-dashboards:
@@ -42,9 +55,6 @@ deps:
 .PHONY: xgo-image
 xgo-image:
 	cd $(packer_absdir)/docker/xgo-image/; ./build.sh
-	# copy build.sh script in the xgo-image-deb6 to avoid code duplication
-	cp $(packer_absdir)/docker/xgo-image/base/build.sh $(packer_absdir)/docker/xgo-image-deb6/base/build.sh
-	cd $(packer_absdir)/docker/xgo-image-deb6/; ./build.sh
 
 .PHONY: fpm-image
 fpm-image:
@@ -54,7 +64,7 @@ fpm-image:
 go-daemon-image:
 	docker build --rm=true -t tudorg/go-daemon $(packer_absdir)/docker/go-daemon/
 
-${BUILD_DIR}/god-linux-386 ${BUILD_DIR}/god-linux-amd64:
+${BUILD_DIR}/god-linux-386 ${BUILD_DIR}/god-linux-amd64 ${BUILD_DIR}/god-linux-arm ${BUILD_DIR}/god-linux-arm64 ${BUILD_DIR}/god-linux-mips ${BUILD_DIR}/god-linux-mips64 ${BUILD_DIR}/god-linux-mipsle ${BUILD_DIR}/god-linux-mips64le ${BUILD_DIR}/god-linux-ppc64le:
 	docker run --rm -v ${BUILD_DIR}:/build tudorg/go-daemon
 
 ${BUILD_DIR}/upload:
@@ -67,13 +77,6 @@ ${BUILD_DIR}/upload/build_id.txt:
 .PHONY: deb-rpm-s3
 deb-rpm-s3:
 	$(packer_absdir)/docker/deb-rpm-s3/build.sh
-
-.PHONY: run-interactive-builder-deb6
-run-interactive-builder-deb6:
-	docker run -t -i -v $(shell pwd)/build:/build \
-		-v $(shell pwd)/xgo-scripts/:/scripts \
-		-v $(shell pwd)/../..:/source \
-		--entrypoint=bash tudorg/beats-builder-deb6
 
 .PHONY: run-interactive-builder
 run-interactive-builder:
@@ -88,14 +91,12 @@ images: xgo-image fpm-image go-daemon-image
 .PHONY: push-images
 push-images:
 	docker push tudorg/beats-builder
-	docker push tudorg/beats-builder-deb6
 	docker push tudorg/fpm
 	docker push tudorg/go-daemon
 
 .PHONY: pull-images
 pull-images:
 	docker pull tudorg/beats-builder
-	docker pull tudorg/beats-builder-deb6
 	docker pull tudorg/fpm
 	docker pull tudorg/go-daemon
 
@@ -115,7 +116,6 @@ endef
 
 .PHONY: clean-images
 clean-images:
-	@$(call rm-image,tudorg/beats-builder-deb6)
 	@$(call rm-image,tudorg/beats-builder)
 
 .PHONY: clean

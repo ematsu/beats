@@ -1,7 +1,7 @@
 
 BUILD_DIR=build
 COVERAGE_DIR=${BUILD_DIR}/coverage
-BEATS=packetbeat filebeat winlogbeat metricbeat
+BEATS=packetbeat filebeat metricbeat
 PROJECTS=libbeat ${BEATS}
 SNAPSHOT?=yes
 
