@@ -35,8 +35,8 @@ TIMEOUT?= 90
 NOSETESTS_OPTIONS?=--process-timeout=$(TIMEOUT) --with-timer ## @testing the options to pass when calling nosetests
 TEST_ENVIRONMENT?=false ## @testing if true, "make testsuite" runs integration tests and system tests in a dockerized test environment
 SYSTEM_TESTS?=false ## @testing if true, "make test" and "make testsuite" run unit tests and system tests
-GOX_OS?=linux darwin windows solaris freebsd netbsd openbsd ## @Building List of all OS to be supported by "make crosscompile".
-GOX_OSARCH?=!darwin/arm !darwin/arm64 !darwin/386 ## @building Space separated list of GOOS/GOARCH pairs to build by "make crosscompile".
+GOX_OS?=linux ## @Building List of all OS to be supported by "make crosscompile".
+GOX_OSARCH?= ## @building Space separated list of GOOS/GOARCH pairs to build by "make crosscompile".
 GOX_FLAGS?= ## @building Additional flags to append to the gox command used by "make crosscompile".
 TESTING_ENVIRONMENT?=snapshot ## @testing The name of the environment under test
 DOCKER_COMPOSE_PROJECT_NAME?=${BEAT_NAME}_${TESTING_ENVIRONMENT} ## @testing The name of the docker-compose project used by the integration and system tests
@@ -47,12 +47,12 @@ PYTHON_ENV?=${BUILD_DIR}/python-env
 BUILDID?=$(shell git rev-parse HEAD) ## @Building The build ID
 VIRTUALENV_PARAMS?=
 INTEGRATION_TESTS?=
-CGO?=false ## @building if true, Build with C Go support
+CGO?=true ## @building if true, Build with C Go support
 
 # Cross compiling targets
-TARGETS?="linux/amd64 linux/386 windows/amd64 windows/386 darwin/amd64" ## @building list of platforms/architecture to be built by "make package"
+TARGETS?="linux/386 linux/amd64 linux/arm linux/arm64 linux/mips linux/mips64 linux/mipsle linux/mips64le linux/ppc64le" ## @building list of platforms/architecture to be built by "make package"
 TARGETS_OLD?="" ## @building list of Debian6 architecture to be built by "make package" when CGO is true
-PACKAGES?=${BEAT_NAME}/deb ${BEAT_NAME}/rpm ${BEAT_NAME}/darwin ${BEAT_NAME}/win ${BEAT_NAME}/bin ## @Building List of OS to be supported by "make package"
+PACKAGES?=${BEAT_NAME}/deb ${BEAT_NAME}/rpm ${BEAT_NAME}/bin ## @Building List of OS to be supported by "make package"
 SNAPSHOT?=yes ## @Building If yes, builds a snapshot version
 BEATS_BUILDER_IMAGE?=tudorg/beats-builder ## @Building Name of the docker image to use when packaging the application
 BEATS_BUILDER_DEB6_IMAGE?=tudorg/beats-builder-deb6 ## @Building Name of the docker image to use when packaging the application for Debian 6
@@ -368,22 +368,6 @@ prepare-package-cgo:
 		-e BEAT_PATH=${BEAT_PATH} \
 		-e BEAT_NAME=${BEAT_NAME} \
 		${BEATS_BUILDER_IMAGE}
-
-	# linux builds on debian 6 for compatibility
-	docker run --rm \
-		-v ${BUILD_DIR}:/build \
-		-v $(abspath ${ES_BEATS}/dev-tools/packer/xgo-scripts):/scripts \
-		-v $(abspath ${PACKER_TEMPLATES_DIR}):/templates \
-		-v $(abspath ..):/source \
-		-e PACK=${BEAT_NAME} \
-		-e BEFORE_BUILD=before_build.sh \
-		-e SOURCE=/source \
-		-e TARGETS=${TARGETS_OLD} \
-		-e BUILDID=${BUILDID} \
-		-e ES_BEATS=${ES_BEATS} \
-		-e BEAT_PATH=${BEAT_PATH} \
-		-e BEAT_NAME=${BEAT_NAME} \
-        ${BEATS_BUILDER_DEB6_IMAGE}
 
 # Prepares images for packaging
 .PHONY: package-setup

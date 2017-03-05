@@ -4,7 +4,7 @@ BEAT_NAME?=filebeat
 BEAT_DESCRIPTION?=Filebeat sends log files to Logstash or directly to Elasticsearch.
 SYSTEM_TESTS=true
 TEST_ENVIRONMENT?=true
-GOX_FLAGS=-arch="amd64 386 arm ppc64 ppc64le"
+GOX_FLAGS=-arch="amd64 386 arm arm64 mips mips64 mipsle mips64le ppc64le"
 
 include ../libbeat/scripts/Makefile
 
