@@ -5,7 +5,7 @@
 
 FROM tudorg/xgo-base
 
-MAINTAINER Eiji MATSUMOTO <toudaiman@gmail.com>
+MAINTAINER Tudor Golubenco <tudor@elastic.co>
 
 # Configure the root Go distribution and bootstrap based on it
 RUN \
