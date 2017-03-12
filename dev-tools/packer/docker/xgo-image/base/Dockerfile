@@ -5,7 +5,7 @@
 
 FROM ubuntu:16.04
 
-MAINTAINER Eiji MATSUMOTO <toudaiman@gmail.com>
+MAINTAINER Tudor Golubenco <tudor@elastic.co>
 
 # Configure the Go environment, since it's not going to change
 ENV PATH   /usr/local/go/bin:$PATH
