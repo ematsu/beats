@@ -31,6 +31,8 @@ https://github.com/elastic/beats/compare/v5.3.0...master[Check the HEAD diff]
 
 *Filebeat*
 
+- Fix modules default file permissions. {pull}3879[3879]
+
 *Heartbeat*
 
 *Metricbeat*
@@ -111,8 +113,14 @@ https://github.com/elastic/beats/compare/v5.2.2...v5.3.0[View commits]
 *Affecting all Beats*
 
 - Add `_id`, `_type`, `_index` and `_score` fields in the generated index pattern. {pull}3282[3282]
+- Fix panic when testing regex-AST to match against date patterns. {issue}3889[3889]
 
 *Filebeat*
+- Always use absolute path for event and registry. {pull}3328[3328]
+- Raise an exception in case there is a syntax error in one of the configuration files available under
+  filebeat.config_dir. {pull}3573[3573]
+- Fix empty registry file on machine crash. {issue}3537[3537]
+- Allow `-` in Apache access log byte count. {pull}3863[3863]
 
 - Fix empty registry file on machine crash. {issue}3537[3537]
 
