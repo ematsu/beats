@@ -20,6 +20,8 @@ include::./overview.asciidoc[]
 
 include::./getting-started.asciidoc[]
 
+include::./modules-getting-started.asciidoc[]
+
 include::./command-line.asciidoc[]
 
 include::../../libbeat/docs/shared-directory-layout.asciidoc[]
@@ -44,6 +46,7 @@ include::./multiple-prospectors.asciidoc[]
 
 include::./load-balancing.asciidoc[]
 
+:standalone:
 :allplatforms:
 include::../../libbeat/docs/yaml.asciidoc[]
 
