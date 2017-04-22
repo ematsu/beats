@@ -219,7 +219,7 @@ include::../../libbeat/docs/shared-template-load.asciidoc[]
 [[filebeat-starting]]
 === Step 5: Starting Filebeat
 
-Start Filebeat by issuing the appropriate command for your platform.
+Start Filebeat by issuing the appropriate command for your platform. 
 
 NOTE: If you use an init.d script to start Filebeat on deb or rpm, you can't
 specify command line flags (see <<filebeat-command-line>>). To specify flags,
@@ -248,7 +248,7 @@ sudo ./filebeat -e -c filebeat.yml -d "publish"
 ----------------------------------------------------------------------
 <1> You'll be running Filebeat as root, so you need to change ownership
 of the configuration file (see
-{libbeat}/config-file-permissions.html[Config File Ownership and Permissions]
+{libbeat}config-file-permissions.html[Config File Ownership and Permissions]
 in the _Beats Platform Reference_).
 
 *win:*
