@@ -3,7 +3,7 @@ BEAT_NAME?=packetbeat
 BEAT_DESCRIPTION?=Packetbeat analyzes network traffic and sends the data to Elasticsearch.
 SYSTEM_TESTS=true
 TEST_ENVIRONMENT=false
-TARGETS="linux/amd64 linux/386 linux/arm linux/mips linux/mips64 linux/mipsle linux/mips64le linux/ppc64le"
+TARGETS="linux/amd64 linux/386 linux/arm linux/arm64 linux/mips linux/mips64 linux/mipsle linux/mips64le linux/ppc64le"
 TARGETS_OLD=""
 CGO=true
 

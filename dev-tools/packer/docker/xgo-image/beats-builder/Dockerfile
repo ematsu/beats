@@ -5,6 +5,8 @@ MAINTAINER Tudor Golubenco <tudor@elastic.co>
 # Get libpcap binaries for linux
 RUN \
 	dpkg --add-architecture i386 && \
+	echo "deb-src http://archive.ubuntu.com/ubuntu/ zesty main restricted" >> /etc/apt/sources.list && \
+	echo "deb-src http://archive.ubuntu.com/ubuntu/ zesty-updates main restricted" >> /etc/apt/sources.list && \
 	apt-get update && \
 	apt-get install -y libpcap0.8-dev flex bison libbison-dev libfl-dev
 
@@ -18,7 +20,7 @@ RUN \
 	mkdir -p /tmp/libpcap && \
 	cd /tmp/libpcap && \
 	apt-get source libpcap-dev && \
-	cd libpcap-1.7.4/ && \
+	cd libpcap-1.8.1/ && \
 	CC=/usr/bin/arm-linux-gnueabihf-gcc ./configure --prefix=/libpcap/arm/usr --libdir=/libpcap/arm/usr/lib/arm-linux-gnueabihf --host=arm-linux-gnueabihf --with-pcap=linux --disable-shared && \
 	make install && \
 	make distclean && \

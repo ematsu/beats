@@ -3,7 +3,7 @@
 #
 # Released under the MIT license.
 
-FROM ubuntu:16.04
+FROM ubuntu:17.04
 
 MAINTAINER Tudor Golubenco <tudor@elastic.co>
 
@@ -31,7 +31,7 @@ RUN \
     gcc-mips64-linux-gnuabi64 g++-mips64-linux-gnuabi64 libc6-dev-mips64-cross       \
     gcc-mips64el-linux-gnuabi64 g++-mips64el-linux-gnuabi64 libc6-dev-mips64el-cross \
     gcc-powerpc64le-linux-gnu g++-powerpc64le-linux-gnu libc6-dev-ppc64el-cross      \
-    gcc-5-multilib  g++-5-multilib                                                   \
+    gcc-6-multilib  g++-6-multilib                                                   \
     libtool libxml2-dev libssl-dev swig pkg-config patch                        \
     make xz-utils cpio wget zip unzip p7zip git mercurial bzr texinfo help2man  \
     binutils-multiarch rsync                                                    \
