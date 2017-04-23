@@ -8,13 +8,13 @@ TEST_ENVIRONMENT?=true
 GOPACKAGES=$(shell go list ${BEAT_PATH}/... | grep -v /vendor/)
 ES_BEATS?=..
 
-TARGETS?="windows/amd64 windows/386 darwin/amd64"
-TARGETS_OLD?="linux/amd64 linux/386"
+TARGETS?="linux/386 linux/amd64 linux/arm linux/arm64 linux/mips linux/mips64 linux/mipsle linux/mips64le linux/ppc64le"
+TARGETS_OLD?=""
 CGO=true
 
 # Metricbeat can only be cross-compiled on platforms not requiring CGO.
-GOX_OS=solaris netbsd linux windows
-GOX_FLAGS=-arch="amd64 386 arm ppc64 ppc64le"
+GOX_OS=linux
+GOX_FLAGS='-arch=arm arm64 mips mips64 mipsle mips64le ppc64le'
 
 
 include ${ES_BEATS}/libbeat/scripts/Makefile

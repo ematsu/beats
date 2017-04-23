@@ -142,59 +142,55 @@ for TARGET in $TARGETS; do
 	fi
 	if ([ $XGOOS == "." ] || [ $XGOOS == "linux" ]) && ([ $XGOARCH == "." ] || [ $XGOARCH == "arm" ]); then
 		echo "Compiling $PACK for linux/arm..."
-		CC=arm-linux-gnueabi-gcc CXX=rm-linux-gnueabi-g++ HOST=arm-linux PREFIX=/usr/local/arm $BUILD_DEPS /deps $LIST_DEPS
+		CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ HOST=arm-linux PREFIX=/usr/local/arm $BUILD_DEPS /deps $LIST_DEPS
 
-		CC=arm-linux-gnueabi-gcc CXX=rm-linux-gnueabi-g++ GOOS=linux GOARCH=arm CGO_ENABLED=${CGO_ENABLED} GOARM=5 go get -d ./$PACK
-		CC=arm-linux-gnueabi-gcc CXX=rm-linux-gnueabi-g++ GOOS=linux GOARCH=arm CGO_ENABLED=${CGO_ENABLED} GOARM=5 go build $V -o /build/$NAME-linux-arm ./$PACK
+		CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ GOOS=linux GOARCH=arm CGO_ENABLED=${CGO_ENABLED} go get -d ./$PACK
+		CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ GOOS=linux GOARCH=arm CGO_ENABLED=${CGO_ENABLED} go build $V -o /build/$NAME-linux-arm ./$PACK
+		#CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ GOOS=linux GOARCH=arm CGO_ENABLED=${CGO_ENABLED} GOARM=5 go get -d ./$PACK
+		#CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ GOOS=linux GOARCH=arm CGO_ENABLED=${CGO_ENABLED} GOARM=5 go build $V -o /build/$NAME-linux-arm ./$PACK
+	fi
+	if ([ $XGOOS == "." ] || [ $XGOOS == "linux" ]) && ([ $XGOARCH == "." ] || [ $XGOARCH == "arm64" ]); then
+		echo "Compiling $PACK for linux/arm64..."
+		CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ HOST=arm64-linux PREFIX=/usr/local/arm64 $BUILD_DEPS /deps $LIST_DEPS
+
+		CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ GOOS=linux GOARCH=arm64 CGO_ENABLED=${CGO_ENABLED} go get -d ./$PACK
+		CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ GOOS=linux GOARCH=arm64 CGO_ENABLED=${CGO_ENABLED} go build $V -o /build/$NAME-linux-arm64 ./$PACK
+	fi
+	if ([ $XGOOS == "." ] || [ $XGOOS == "linux" ]) && ([ $XGOARCH == "." ] || [ $XGOARCH == "mips" ]); then
+		echo "Compiling $PACK for linux/mips..."
+		CC=mips-linux-gnu-gcc CXX=mips-linux-gnu-g++ HOST=mips-linux PREFIX=/usr/local/mips $BUILD_DEPS /deps $LIST_DEPS
+
+		CC=mips-linux-gnu-gcc CXX=mips-linux-gnu-g++ GOOS=linux GOARCH=mips CGO_ENABLED=${CGO_ENABLED} go get -d ./$PACK
+		CC=mips-linux-gnu-gcc CXX=mips-linux-gnu-g++ GOOS=linux GOARCH=mips CGO_ENABLED=${CGO_ENABLED} go build $V -o /build/$NAME-linux-mips ./$PACK
+	fi
+	if ([ $XGOOS == "." ] || [ $XGOOS == "linux" ]) && ([ $XGOARCH == "." ] || [ $XGOARCH == "mips64" ]); then
+		echo "Compiling $PACK for linux/mips64..."
+		CC=mips64-linux-gnuabi64-gcc CXX=mips64-linux-gnuabi64-g++ HOST=mips64-linux PREFIX=/usr/local/mips64 $BUILD_DEPS /deps $LIST_DEPS
+
+		CC=mips64-linux-gnuabi64-gcc CXX=mips64-linux-gnuabi64-g++ GOOS=linux GOARCH=mips64 CGO_ENABLED=${CGO_ENABLED} go get -d ./$PACK
+		CC=mips64-linux-gnuabi64-gcc CXX=mips64-linux-gnuabi64-g++ GOOS=linux GOARCH=mips64 CGO_ENABLED=${CGO_ENABLED} go build $V -o /build/$NAME-linux-mips64 ./$PACK
+	fi
+	if ([ $XGOOS == "." ] || [ $XGOOS == "linux" ]) && ([ $XGOARCH == "." ] || [ $XGOARCH == "mipsle" ]); then
+		echo "Compiling $PACK for linux/mipsle..."
+		CC=mipsel-linux-gnu-gcc CXX=mipsel-linux-gnu-g++ HOST=mipsel-linux PREFIX=/usr/local/mipsle $BUILD_DEPS /deps $LIST_DEPS
+
+		CC=mipsel-linux-gnu-gcc CXX=mipsel-linux-gnu-g++ GOOS=linux GOARCH=mipsle CGO_ENABLED=${CGO_ENABLED} go get -d ./$PACK
+		CC=mipsel-linux-gnu-gcc CXX=mipsel-linux-gnu-g++ GOOS=linux GOARCH=mipsle CGO_ENABLED=${CGO_ENABLED} go build $V -o /build/$NAME-linux-mipsle ./$PACK
+	fi
+	if ([ $XGOOS == "." ] || [ $XGOOS == "linux" ]) && ([ $XGOARCH == "." ] || [ $XGOARCH == "mips64le" ]); then
+		echo "Compiling $PACK for linux/mips64le..."
+		CC=mips64el-linux-gnuabi64-gcc CXX=mips64el-linux-gnuabi64-g++ HOST=mips64el-linux PREFIX=/usr/local/mips64le $BUILD_DEPS /deps $LIST_DEPS
+
+		CC=mips64el-linux-gnuabi64-gcc CXX=mips64el-linux-gnuabi64-g++ GOOS=linux GOARCH=mips64le CGO_ENABLED=${CGO_ENABLED} go get -d ./$PACK
+		CC=mips64el-linux-gnuabi64-gcc CXX=mips64el-linux-gnuabi64-g++ GOOS=linux GOARCH=mips64le CGO_ENABLED=${CGO_ENABLED} go build $V -o /build/$NAME-linux-mips64le ./$PACK
+	fi
+	if ([ $XGOOS == "." ] || [ $XGOOS == "linux" ]) && ([ $XGOARCH == "." ] || [ $XGOARCH == "ppc64le" ]); then
+		echo "Compiling $PACK for linux/ppc64le..."
+		CC=powerpc64le-linux-gnu-gcc CXX=powerpc64le-linux-gnu-g++ HOST=powerpc64le-linux PREFIX=/usr/local/ppc64lc $BUILD_DEPS /deps $LIST_DEPS
+		CC=powerpc64le-linux-gnu-gcc CXX=powerpc64le-linux-gnu-g++ GOOS=linux GOARCH=ppc64le CGO_ENABLED=${CGO_ENABLED} go get -d ./$PACK
+		CC=powerpc64le-linux-gnu-gcc CXX=powerpc64le-linux-gnu-g++ GOOS=linux GOARCH=ppc64le CGO_ENABLED=${CGO_ENABLED} go build $V -o /build/$NAME-linux-ppc64le ./$PACK
 	fi
 
-	# Check and build for Windows targets
-	if [ $XGOOS == "." ] || [[ $XGOOS == windows* ]]; then
-		# Split the platform version and configure the Windows NT version
-		PLATFORM=`echo $XGOOS | cut -d '-' -f 2`
-		if [ "$PLATFORM" == "" ] || [ "$PLATFORM" == "." ] || [ "$PLATFORM" == "windows" ]; then
-		  PLATFORM=4.0 # Windows NT
-		fi
-
-	    MAJOR=`echo $PLATFORM | cut -d '.' -f 1`
-		if [ "${PLATFORM/.}" != "$PLATFORM" ] ; then
-		  MINOR=`echo $PLATFORM | cut -d '.' -f 2`
-		fi
-		CGO_NTDEF="-D_WIN32_WINNT=0x`printf "%02d" $MAJOR``printf "%02d" $MINOR`"
-
-		# Build the requested windows binaries
-		if [ $XGOARCH == "." ] || [ $XGOARCH == "amd64" ]; then
-			echo "Compiling $PACK for windows-$PLATFORM/amd64..."
-			CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ CFLAGS="$CGO_NTDEF" CXXFLAGS="$CGO_NTDEF" HOST=x86_64-w64-mingw32 PREFIX=/usr/x86_64-w64-mingw32 $BUILD_DEPS /deps $LIST_DEPS
-			export PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig
-
-			CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED} CGO_CFLAGS="$CGO_NTDEF" CGO_CXXFLAGS="$CGO_NTDEF" go get -d ./$PACK
-			CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED} CGO_CFLAGS="$CGO_NTDEF" CGO_CXXFLAGS="$CGO_NTDEF" go build  $V $R -o /build/$NAME-windows-amd64$R.exe ./$PACK
-		fi
-
-		if [ $XGOARCH == "." ] || [ $XGOARCH == "386" ]; then
-			echo "Compiling $PACK for windows-$PLATFORM/386..."
-			CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ CFLAGS="$CGO_NTDEF" CXXFLAGS="$CGO_NTDEF" HOST=i686-w64-mingw32 PREFIX=/usr/i686-w64-mingw32 $BUILD_DEPS /deps $LIST_DEPS
-			export PKG_CONFIG_PATH=/usr/i686-w64-mingw32/lib/pkgconfig
-
-			CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 CGO_ENABLED=${CGO_ENABLED} CGO_CFLAGS="$CGO_NTDEF" CGO_CXXFLAGS="$CGO_NTDEF" go get -d ./$PACK
-			CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 CGO_ENABLED=${CGO_ENABLED} CGO_CFLAGS="$CGO_NTDEF" CGO_CXXFLAGS="$CGO_NTDEF" go build $V -o /build/$NAME-windows-386.exe ./$PACK
-		fi
-	fi
-
-	# Check and build for OSX targets
-	if ([ $XGOOS == "." ] || [ $XGOOS == "darwin" ]) && ([ $XGOARCH == "." ] || [ $XGOARCH == "amd64" ]); then
-		echo "Compiling $PACK for darwin/amd64..."
-		CC=o64-clang CXX=o64-clang++ HOST=x86_64-apple-darwin10 PREFIX=/usr/local $BUILD_DEPS /deps $LIST_DEPS
-		CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED} go get -d ./$PACK
-		CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED} go build -ldflags=-s $V $R -o /build/$NAME-darwin-amd64$R ./$PACK
-	fi
-	if ([ $XGOOS == "." ] || [ $XGOOS == "darwin" ]) && ([ $XGOARCH == "." ] || [ $XGOARCH == "386" ]); then
-		echo "Compiling for darwin/386..."
-		CC=o32-clang CXX=o32-clang++ HOST=i386-apple-darwin10 PREFIX=/usr/local $BUILD_DEPS /deps $LIST_DEPS
-		CC=o32-clang CXX=o32-clang++ GOOS=darwin GOARCH=386 CGO_ENABLED=${CGO_ENABLED} go get -d ./$PACK
-		CC=o32-clang CXX=o32-clang++ GOOS=darwin GOARCH=386 CGO_ENABLED=${CGO_ENABLED} go build $V -o /build/$NAME-darwin-386 ./$PACK
-	fi
 done
 
 echo "Build process completed"

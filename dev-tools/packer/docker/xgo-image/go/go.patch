@@ -1,0 +1,11 @@
+diff -ruN src/cmd/compile/internal/gc/reflect.go src.patch/cmd/compile/internal/gc/reflect.go
+--- src/cmd/compile/internal/gc/reflect.go	2017-04-08 01:54:08.000000000 +0900
++++ src.patch/cmd/compile/internal/gc/reflect.go	2017-04-22 15:40:26.827905993 +0900
+@@ -998,6 +998,7 @@
+ 		Fatalf("itabname(%v, %v)", t, itype)
+ 	}
+ 	s := Pkglookup(t.tconv(FmtLeft)+","+itype.tconv(FmtLeft), itabpkg)
++	Linksym(s).Set(obj.AttrLocal, true)
+ 	if s.Def == nil {
+ 		n := newname(s)
+ 		n.Type = Types[TUINT8]
