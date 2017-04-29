@@ -8,7 +8,7 @@
 // Template, add newest changes here
 
 === Beats version HEAD
-https://github.com/elastic/beats/compare/v5.3.1...master[Check the HEAD diff]
+https://github.com/elastic/beats/compare/v5.3.2...master[Check the HEAD diff]
 
 ==== Breaking changes
 
@@ -28,9 +28,9 @@ https://github.com/elastic/beats/compare/v5.3.1...master[Check the HEAD diff]
 ==== Bugfixes
 
 *Affecting all Beats*
+- Fix console output {pull}4045[4045]
 
 *Filebeat*
-- Properly shut down crawler in case one prospector is misconfigured. {pull}4037[4037]
 
 *Heartbeat*
 
@@ -86,6 +86,18 @@ https://github.com/elastic/beats/compare/v5.3.1...master[Check the HEAD diff]
 
 ////////////////////////////////////////////////////////////
 
+[[release-notes-5.3.2]]
+=== Beats version 5.3.2
+https://github.com/elastic/beats/compare/v5.3.1...v5.3.2[View commits]
+
+==== Bugfixes
+
+*Filebeat*
+
+- Properly shut down crawler in case one prospector is misconfigured. {pull}4037[4037]
+- Fix panic in JSON decoding code if the input line is "null". {pull}4042[4042]
+
+
 [[release-notes-5.3.1]]
 === Beats version 5.3.1
 https://github.com/elastic/beats/compare/v5.3.0...v5.3.1[View commits]
@@ -95,6 +107,7 @@ https://github.com/elastic/beats/compare/v5.3.0...v5.3.1[View commits]
 *Affecting all Beats*
 
 - Fix panic when testing regex-AST to match against date patterns. {issue}3889[3889]
+- Fix panic due to race condition in kafka output. {pull}4098[4098]
 
 *Filebeat*
 
