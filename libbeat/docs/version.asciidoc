@@ -1,8 +1,4 @@
 :stack-version: 5.4.0
-<<<<<<< HEAD
-:doc-branch: 5.x
-=======
 :doc-branch: 5.4
->>>>>>> elastic/5.4
-:go-version: 1.7.4
+:go-version: 1.8.1
 :release-state: released
