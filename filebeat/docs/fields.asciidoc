@@ -684,9 +684,11 @@ The logged message.
 
 
 [[exported-fields-kubernetes-processor]]
-== Kubernetes info Fields
+== kubernetes Fields
 
+beta[]
 Kubernetes metadata added by the kubernetes processor
+
 
 
 
@@ -730,6 +732,14 @@ type: keyword
 Kubernetes container name
 
 
+[float]
+=== kubernetes.container.image
+
+type: keyword
+
+Kubernetes container image
+
+
 [[exported-fields-log]]
 == Log File Content Fields
 
@@ -768,11 +778,11 @@ The content of the line read from the log file.
 
 
 [float]
-=== input_type
+=== prospector.type
 
 required: True
 
-The input type from which the event was generated. This field is set to the value specified for the `input_type` option in the prospector section of the Filebeat config file.
+The prospector type from which the event was generated. This field is set to the value specified for the `type` option in the prospector section of the Filebeat config file.
 
 
 [float]

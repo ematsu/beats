@@ -20,11 +20,11 @@ section for details.
 *`overwrite`*:: A boolean that specifies whether to overwrite the existing template. The default
 is false.
 
-*`settings`*:: A dictionary of settings to place into the `settings` dictionary of the Elasticsearch
-template. For more details about the available Elasticsearch mapping options, please see the
-Elasticsearch {elasticsearch}/mapping.html[mapping reference].
+*`settings.index`*:: A dictionary of settings to place into the `settings.index` dictionary of the
+Elasticsearch template. For more details about the available Elasticsearch mapping options, please
+see the Elasticsearch {elasticsearch}/mapping.html[mapping reference].
 
-For example:
+Example:
 
 ["source","yaml",subs="attributes,callouts"]
 ----------------------------------------------------------------------
@@ -34,4 +34,40 @@ setup.template.overwrite: false
 setup.template.settings:
   index.number_of_shards: 1
   index.number_of_replicas: 1
+----------------------------------------------------------------------
+
+*`settings._source`*:: A dictionary of settings for the `_source` field. For the available settings,
+please see the Elasticsearch {elasticsearch}/mapping-source-field.html[reference].
+
+Example:
+
+["source","yaml",subs="attributes,callouts"]
+----------------------------------------------------------------------
+setup.template.name: "{beatname_lc}"
+setup.template.fields: "fields.yml"
+setup.template.overwrite: false
+setup.template.settings:
+  _source.enabled: false
+----------------------------------------------------------------------
+
+*`output_to_file.path`*:: If this option is set, {beatname_uc} generates the Elasticsearch template
+  JSON object and writes into a file at the specified path. Immediately after writing the file,
+  {beatname_uc} exists with the exit code 1.
+
+For example, you can generate a template file ready to be uploaded to Elasticsearch like this:
+
+["source","yaml",subs="attributes,callouts"]
+----------------------------------------------------------------------
+./{beatname_lc} -e -E "setup.template.output_to_file.path={beatname_lc}.template.json"
+----------------------------------------------------------------------
+
+*`output_to_file.version`*:: The Elasticsearch version for which to generate the template file. By
+default, the {beatname_uc} version is used. This setting is only used if `output_to_file.path` is
+also set.
+
+For example, the following generates a template file for Elasticsearch 5.4:
+
+["source","yaml",subs="attributes,callouts"]
+----------------------------------------------------------------------
+./{beatname_lc} -e -E "setup.template.output_to_file.path={beatname_lc}.template.json" -E "setup.template.output_to_file.version=5.4.0"
 ----------------------------------------------------------------------

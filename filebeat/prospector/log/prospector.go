@@ -36,7 +36,7 @@ type Prospector struct {
 	done     chan struct{}
 }
 
-// NewLog instantiates a new Log
+// NewProspector instantiates a new Log
 func NewProspector(cfg *common.Config, states []file.State, outlet channel.Outleter, done chan struct{}) (*Prospector, error) {
 
 	p := &Prospector{
@@ -49,6 +49,10 @@ func NewProspector(cfg *common.Config, states []file.State, outlet channel.Outle
 	}
 
 	if err := cfg.Unpack(&p.config); err != nil {
+		return nil, err
+	}
+	if err := p.config.resolvePaths(); err != nil {
+		logp.Err("Failed to resolve paths in config: %+v", err)
 		return nil, err
 	}
 
@@ -142,7 +146,7 @@ func (p *Prospector) Run() {
 				}
 			} else {
 				// Check if existing source on disk and state are the same. Remove if not the case.
-				newState := file.NewState(stat, state.Source, p.config.InputType)
+				newState := file.NewState(stat, state.Source, p.config.Type)
 				if !newState.FileStateOS.IsSame(state.FileStateOS) {
 					p.removeState(state)
 					logp.Debug("prospector", "Remove state for file as file removed or renamed: %s", state.Source)
@@ -175,11 +179,7 @@ func (p *Prospector) getFiles() map[string]os.FileInfo {
 	paths := map[string]os.FileInfo{}
 
 	for _, path := range p.config.Paths {
-		depth := uint8(0)
-		if p.config.recursiveGlob {
-			depth = recursiveGlobDepth
-		}
-		matches, err := file.Glob(path, depth)
+		matches, err := filepath.Glob(path)
 		if err != nil {
 			logp.Err("glob(%s) failed: %v", path, err)
 			continue
@@ -284,7 +284,7 @@ func (p *Prospector) scan() {
 		logp.Debug("prospector", "Check file for harvesting: %s", path)
 
 		// Create new state for comparison
-		newState := file.NewState(info, path, p.config.InputType)
+		newState := file.NewState(info, path, p.config.Type)
 
 		// Load last state
 		lastState := p.states.FindPrevious(newState)
