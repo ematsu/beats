@@ -50,7 +50,7 @@ filebeat.prospectors:
   # are matching any regular expression from the list. By default, no files are dropped.
   #exclude_files: ['.gz$']
 
-  # Optional additional fields. These field can be freely picked
+  # Optional additional fields. These fields can be freely picked
   # to add additional information to the crawled log files for filtering
   #fields:
   #  level: debug
@@ -209,6 +209,27 @@ filebeat.prospectors:
 #----------------------------- Stdin prospector -------------------------------
 # Configuration to use stdin input
 #- type: stdin
+
+#------------------------- Redis slowlog prospector ---------------------------
+# Experimental: Config options for the redis slow log prospector
+#- input_type: redis
+  #hosts: ["localhost:6379"]
+  #username:
+  #password:
+  #enabled: false
+  #scan_frequency: 10s
+
+  # Timeout after which time the prospector should return an error
+  #timeout: 1s
+
+  # Network type to be used for redis connection. Default: tcp
+  #network: tcp
+
+  # Max number of concurrent connections. Default: 10
+  #maxconn: 10
+
+  # Redis AUTH password. Empty by default.
+  #password: foobared
 
 #========================= Filebeat global options ============================
 
