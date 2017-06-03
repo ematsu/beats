@@ -56,4 +56,7 @@ ADD build.sh /build.sh
 ENV BUILD /build.sh
 RUN chmod +x $BUILD
 
+# Inject patch file for go itself
+ADD go.patch /go.patch
+
 ENTRYPOINT ["/build.sh"]

@@ -20,7 +20,7 @@ rm -f `basename $ROOT_DIST`
 
 # Apply vile patch
 echo "Applying go patch..."
-#(cd /usr/local/go/src && patch -p1 < /go.patch)
+(cd /usr/local/go && patch -p1 < /go.patch)
 
 export GOROOT=/usr/local/go
 export GOROOT_BOOTSTRAP=$GOROOT
