@@ -381,7 +381,7 @@ filebeat.prospectors:
 
 #------------------------- Redis slowlog prospector ---------------------------
 # Experimental: Config options for the redis slow log prospector
-#- input_type: redis
+#- type: redis
   #hosts: ["localhost:6379"]
   #username:
   #password:
@@ -516,8 +516,10 @@ filebeat.prospectors:
 #
 #processors:
 #- add_docker_metadata:
+#    host: "unix:///var/run/docker.sock"
+#    match_source: true
+#    match_source_index: 4
 #    match_fields: ["system.process.cgroup.id"]
-#  host: "unix:///var/run/docker.sock"
 #  # To connect to Docker over TLS you must specify a client and CA certificate.
 #  #ssl:
 #  #  certificate_authority: "/etc/pki/root/ca.pem"
@@ -637,6 +639,13 @@ output.elasticsearch:
 
   # Set gzip compression level.
   #compression_level: 3
+
+  # Optional maximum time to live for a connection to Logstash, after which the
+  # connection will be re-established.  A value of `0s` (the default) will
+  # disable this feature.
+  #
+  # Not yet supported for async connections (i.e. with the "pipelining" option set)
+  #ttl: 30s
 
   # Optional load balance the events between the Logstash hosts
   #loadbalance: true
