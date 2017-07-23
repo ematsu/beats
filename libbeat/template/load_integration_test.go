@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"path/filepath"
 	"testing"
-	"time"
 
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/outputs/elasticsearch"
@@ -16,11 +15,10 @@ import (
 )
 
 func TestCheckTemplate(t *testing.T) {
-
-	client := elasticsearch.GetTestingElasticsearch()
-
-	err := client.Connect(5 * time.Second)
-	assert.Nil(t, err)
+	client := elasticsearch.GetTestingElasticsearch(t)
+	if err := client.Connect(); err != nil {
+		t.Fatal(err)
+	}
 
 	loader := &Loader{
 		client: client,
@@ -31,11 +29,11 @@ func TestCheckTemplate(t *testing.T) {
 }
 
 func TestLoadTemplate(t *testing.T) {
-
 	// Setup ES
-	client := elasticsearch.GetTestingElasticsearch()
-	err := client.Connect(5 * time.Second)
-	assert.Nil(t, err)
+	client := elasticsearch.GetTestingElasticsearch(t)
+	if err := client.Connect(); err != nil {
+		t.Fatal(err)
+	}
 
 	// Load template
 	absPath, err := filepath.Abs("../")
@@ -69,16 +67,16 @@ func TestLoadTemplate(t *testing.T) {
 }
 
 func TestLoadInvalidTemplate(t *testing.T) {
-
 	// Invalid Template
 	template := map[string]interface{}{
 		"json": "invalid",
 	}
 
 	// Setup ES
-	client := elasticsearch.GetTestingElasticsearch()
-	err := client.Connect(5 * time.Second)
-	assert.Nil(t, err)
+	client := elasticsearch.GetTestingElasticsearch(t)
+	if err := client.Connect(); err != nil {
+		t.Fatal(err)
+	}
 
 	templateName := "invalidtemplate"
 
@@ -87,7 +85,7 @@ func TestLoadInvalidTemplate(t *testing.T) {
 	}
 
 	// Try to load invalid template
-	err = loader.LoadTemplate(templateName, template)
+	err := loader.LoadTemplate(templateName, template)
 	assert.Error(t, err)
 
 	// Make sure template was not loaded
@@ -95,7 +93,6 @@ func TestLoadInvalidTemplate(t *testing.T) {
 }
 
 func getTemplate(t *testing.T, client ESClient, templateName string) common.MapStr {
-
 	status, body, err := client.Request("GET", "/_template/"+templateName, "", nil, nil)
 	assert.NoError(t, err)
 	assert.Equal(t, status, 200)
@@ -115,7 +112,6 @@ func newConfigFrom(t *testing.T, from interface{}) *common.Config {
 
 // Tests loading the templates for each beat
 func TestLoadBeatsTemplate(t *testing.T) {
-
 	beats := []string{
 		"libbeat",
 	}
@@ -127,10 +123,10 @@ func TestLoadBeatsTemplate(t *testing.T) {
 		assert.Nil(t, err)
 
 		// Setup ES
-		client := elasticsearch.GetTestingElasticsearch()
-
-		err = client.Connect(5 * time.Second)
-		assert.Nil(t, err)
+		client := elasticsearch.GetTestingElasticsearch(t)
+		if err := client.Connect(); err != nil {
+			t.Fatal(err)
+		}
 
 		fieldsPath := absPath + "/fields.yml"
 		index := beat
@@ -160,11 +156,11 @@ func TestLoadBeatsTemplate(t *testing.T) {
 }
 
 func TestTemplateSettings(t *testing.T) {
-
 	// Setup ES
-	client := elasticsearch.GetTestingElasticsearch()
-	err := client.Connect(5 * time.Second)
-	assert.Nil(t, err)
+	client := elasticsearch.GetTestingElasticsearch(t)
+	if err := client.Connect(); err != nil {
+		t.Fatal(err)
+	}
 
 	// Load template
 	absPath, err := filepath.Abs("../")
@@ -212,11 +208,11 @@ func TestTemplateSettings(t *testing.T) {
 }
 
 func TestOverwrite(t *testing.T) {
-
 	// Setup ES
-	client := elasticsearch.GetTestingElasticsearch()
-	err := client.Connect(5 * time.Second)
-	assert.Nil(t, err)
+	client := elasticsearch.GetTestingElasticsearch(t)
+	if err := client.Connect(); err != nil {
+		t.Fatal(err)
+	}
 
 	beatInfo := common.BeatInfo{
 		Beat:    "testbeat",
@@ -285,4 +281,88 @@ func TestOverwrite(t *testing.T) {
 
 	// Delete template again to clean up
 	client.Request("DELETE", "/_template/"+templateName, "", nil, nil)
+}
+
+var dataTests = []struct {
+	data  common.MapStr
+	error bool
+}{
+	{
+		data: common.MapStr{
+			"keyword": "test keyword",
+			"array":   [...]int{1, 2, 3},
+			"object": common.MapStr{
+				"hello": "world",
+			},
+		},
+		error: false,
+	},
+	{
+		// Invalid array
+		data: common.MapStr{
+			"array": common.MapStr{
+				"hello": "world",
+			},
+		},
+		error: true,
+	},
+	{
+		// Invalid object
+		data: common.MapStr{
+			"object": [...]int{1, 2, 3},
+		},
+		error: true,
+	},
+	{
+		// tests enabled: false values
+		data: common.MapStr{
+			"array_disabled": [...]int{1, 2, 3},
+			"object_disabled": common.MapStr{
+				"hello": "world",
+			},
+		},
+		error: false,
+	},
+}
+
+// Tests if data can be loaded into elasticsearch with right types
+func TestTemplateWithData(t *testing.T) {
+	fieldsPath, err := filepath.Abs("./testdata/fields.yml")
+	assert.NotNil(t, fieldsPath)
+	assert.Nil(t, err)
+
+	// Setup ES
+	client := elasticsearch.GetTestingElasticsearch(t)
+
+	tmpl, err := New(version.GetDefaultVersion(), client.GetVersion(), "testindex", TemplateSettings{})
+	assert.NoError(t, err)
+	content, err := tmpl.Load(fieldsPath)
+	assert.NoError(t, err)
+
+	loader := &Loader{
+		client: client,
+	}
+
+	// Load template
+	err = loader.LoadTemplate(tmpl.GetName(), content)
+	assert.Nil(t, err)
+
+	// Make sure template was loaded
+	assert.True(t, loader.CheckTemplate(tmpl.GetName()))
+
+	for _, test := range dataTests {
+		_, _, err = client.Index(tmpl.GetName(), "doc", "", nil, test.data)
+		if test.error {
+			assert.NotNil(t, err)
+
+		} else {
+			assert.Nil(t, err)
+		}
+	}
+
+	// Delete template again to clean up
+	client.Request("DELETE", "/_template/"+tmpl.GetName(), "", nil, nil)
+
+	// Make sure it was removed
+	assert.False(t, loader.CheckTemplate(tmpl.GetName()))
 }

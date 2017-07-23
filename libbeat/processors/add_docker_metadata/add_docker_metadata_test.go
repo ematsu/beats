@@ -3,21 +3,23 @@ package add_docker_metadata
 import (
 	"testing"
 
-	"github.com/elastic/beats/libbeat/common"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/elastic/beats/libbeat/common"
+	"github.com/elastic/beats/libbeat/publisher/beat"
 )
 
 func TestInitialization(t *testing.T) {
 	var testConfig = common.NewConfig()
 
-	p, err := buildDockerMetadataProcessor(*testConfig, MockWatcherFactory(nil))
+	p, err := buildDockerMetadataProcessor(testConfig, MockWatcherFactory(nil))
 	assert.NoError(t, err, "initializing add_docker_metadata processor")
 
 	input := common.MapStr{}
-	result, err := p.Run(input)
+	result, err := p.Run(&beat.Event{Fields: input})
 	assert.NoError(t, err, "processing an event")
 
-	assert.Equal(t, common.MapStr{}, result)
+	assert.Equal(t, common.MapStr{}, result.Fields)
 }
 
 func TestNoMatch(t *testing.T) {
@@ -26,16 +28,16 @@ func TestNoMatch(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
-	p, err := buildDockerMetadataProcessor(*testConfig, MockWatcherFactory(nil))
+	p, err := buildDockerMetadataProcessor(testConfig, MockWatcherFactory(nil))
 	assert.NoError(t, err, "initializing add_docker_metadata processor")
 
 	input := common.MapStr{
 		"field": "value",
 	}
-	result, err := p.Run(input)
+	result, err := p.Run(&beat.Event{Fields: input})
 	assert.NoError(t, err, "processing an event")
 
-	assert.Equal(t, common.MapStr{"field": "value"}, result)
+	assert.Equal(t, common.MapStr{"field": "value"}, result.Fields)
 }
 
 func TestMatchNoContainer(t *testing.T) {
@@ -44,16 +46,16 @@ func TestMatchNoContainer(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
-	p, err := buildDockerMetadataProcessor(*testConfig, MockWatcherFactory(nil))
+	p, err := buildDockerMetadataProcessor(testConfig, MockWatcherFactory(nil))
 	assert.NoError(t, err, "initializing add_docker_metadata processor")
 
 	input := common.MapStr{
 		"foo": "garbage",
 	}
-	result, err := p.Run(input)
+	result, err := p.Run(&beat.Event{Fields: input})
 	assert.NoError(t, err, "processing an event")
 
-	assert.Equal(t, common.MapStr{"foo": "garbage"}, result)
+	assert.Equal(t, common.MapStr{"foo": "garbage"}, result.Fields)
 }
 
 func TestMatchContainer(t *testing.T) {
@@ -62,7 +64,7 @@ func TestMatchContainer(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
-	p, err := buildDockerMetadataProcessor(*testConfig, MockWatcherFactory(
+	p, err := buildDockerMetadataProcessor(testConfig, MockWatcherFactory(
 		map[string]*Container{
 			"container_id": &Container{
 				ID:    "container_id",
@@ -79,7 +81,7 @@ func TestMatchContainer(t *testing.T) {
 	input := common.MapStr{
 		"foo": "container_id",
 	}
-	result, err := p.Run(input)
+	result, err := p.Run(&beat.Event{Fields: input})
 	assert.NoError(t, err, "processing an event")
 
 	assert.EqualValues(t, common.MapStr{
@@ -95,7 +97,7 @@ func TestMatchContainer(t *testing.T) {
 			},
 		},
 		"foo": "container_id",
-	}, result)
+	}, result.Fields)
 }
 
 func TestMatchSource(t *testing.T) {
@@ -103,7 +105,7 @@ func TestMatchSource(t *testing.T) {
 	testConfig, err := common.NewConfigFrom(map[string]interface{}{})
 	assert.NoError(t, err)
 
-	p, err := buildDockerMetadataProcessor(*testConfig, MockWatcherFactory(
+	p, err := buildDockerMetadataProcessor(testConfig, MockWatcherFactory(
 		map[string]*Container{
 			"FABADA": &Container{
 				ID:    "FABADA",
@@ -120,7 +122,7 @@ func TestMatchSource(t *testing.T) {
 	input := common.MapStr{
 		"source": "/var/lib/docker/containers/FABADA/foo.log",
 	}
-	result, err := p.Run(input)
+	result, err := p.Run(&beat.Event{Fields: input})
 	assert.NoError(t, err, "processing an event")
 
 	assert.EqualValues(t, common.MapStr{
@@ -136,7 +138,7 @@ func TestMatchSource(t *testing.T) {
 			},
 		},
 		"source": "/var/lib/docker/containers/FABADA/foo.log",
-	}, result)
+	}, result.Fields)
 }
 
 func TestDisableSource(t *testing.T) {
@@ -146,7 +148,7 @@ func TestDisableSource(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
-	p, err := buildDockerMetadataProcessor(*testConfig, MockWatcherFactory(
+	p, err := buildDockerMetadataProcessor(testConfig, MockWatcherFactory(
 		map[string]*Container{
 			"FABADA": &Container{
 				ID:    "FABADA",
@@ -163,11 +165,11 @@ func TestDisableSource(t *testing.T) {
 	input := common.MapStr{
 		"source": "/var/lib/docker/containers/FABADA/foo.log",
 	}
-	result, err := p.Run(input)
+	result, err := p.Run(&beat.Event{Fields: input})
 	assert.NoError(t, err, "processing an event")
 
 	// remains unchanged
-	assert.EqualValues(t, input, result)
+	assert.EqualValues(t, input, result.Fields)
 }
 
 // Mock container watcher

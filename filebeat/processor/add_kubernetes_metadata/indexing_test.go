@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/elastic/beats/libbeat/common"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/elastic/beats/libbeat/common"
 )
 
 func TestLogsPathMatcher(t *testing.T) {
@@ -28,5 +29,4 @@ func TestLogsPathMatcher(t *testing.T) {
 	output = logMatcher.MetadataIndex(input)
 
 	assert.Equal(t, output, cid)
-
 }

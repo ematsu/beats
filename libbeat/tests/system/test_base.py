@@ -16,7 +16,7 @@ class Test(BaseTest):
         )
 
         proc = self.start_beat()
-        self.wait_until(lambda: self.log_contains("Setup Beat"))
+        self.wait_until(lambda: self.log_contains("mockbeat start running."))
         proc.check_kill_and_wait()
 
     def test_no_config(self):
@@ -53,12 +53,12 @@ class Test(BaseTest):
         # first run with default config, validating config being
         # actually correct.
         proc = self.start_beat()
-        self.wait_until(lambda: self.log_contains("Setup Beat"))
+        self.wait_until(lambda: self.log_contains("mockbeat start running."))
         proc.check_kill_and_wait()
 
         # start beat with invalid config setting on command line
         exit_code = self.run_beat(
-            extra_args=["-E", "output.console=invalid"])
+            extra_args=["-d", "config", "-E", "output.console=invalid"])
 
         assert exit_code == 1
         assert self.log_contains("error unpacking config data") is True

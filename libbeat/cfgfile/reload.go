@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	DefaultReloadConfig = ReloadConfig{
+	DefaultDynamicConfig = DynamicConfig{
 		Reload: Reload{
 			Period:  10 * time.Second,
 			Enabled: false,
@@ -27,7 +27,9 @@ var (
 	moduleRunning = monitoring.NewInt(nil, "libbeat.config.module.running")
 )
 
-type ReloadConfig struct {
+// DynamicConfig loads config files from a given path, allowing to reload new changes
+// while running the beat
+type DynamicConfig struct {
 	// If path is a relative path, it is relative to the ${path.config}
 	Path   string `config:"path"`
 	Reload Reload `config:"reload"`
@@ -51,15 +53,14 @@ type Runner interface {
 // Reloader is used to register and reload modules
 type Reloader struct {
 	registry *Registry
-	config   ReloadConfig
+	config   DynamicConfig
 	done     chan struct{}
 	wg       sync.WaitGroup
 }
 
 // NewReloader creates new Reloader instance for the given config
 func NewReloader(cfg *common.Config) *Reloader {
-
-	config := DefaultReloadConfig
+	config := DefaultDynamicConfig
 	cfg.Unpack(&config)
 
 	return &Reloader{
@@ -71,7 +72,6 @@ func NewReloader(cfg *common.Config) *Reloader {
 
 // Run runs the reloader
 func (rl *Reloader) Run(runnerFactory RunnerFactory) {
-
 	logp.Info("Config reloader started")
 
 	rl.wg.Add(1)
@@ -189,6 +189,9 @@ func (rl *Reloader) Stop() {
 }
 
 func (rl *Reloader) startRunners(list map[uint64]Runner) {
+	if len(list) == 0 {
+		return
+	}
 
 	logp.Info("Starting %v runners ...", len(list))
 	for id, runner := range list {
@@ -202,6 +205,10 @@ func (rl *Reloader) startRunners(list map[uint64]Runner) {
 }
 
 func (rl *Reloader) stopRunners(list map[uint64]Runner) {
+	if len(list) == 0 {
+		return
+	}
+
 	logp.Info("Stopping %v runners ...", len(list))
 
 	wg := sync.WaitGroup{}

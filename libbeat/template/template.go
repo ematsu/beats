@@ -18,15 +18,14 @@ var (
 
 type Template struct {
 	index       string
-	beatVersion Version
-	esVersion   Version
+	beatVersion common.Version
+	esVersion   common.Version
 	settings    TemplateSettings
 }
 
 // New creates a new template instance
 func New(beatVersion string, esVersion string, index string, settings TemplateSettings) (*Template, error) {
-
-	bV, err := NewVersion(beatVersion)
+	bV, err := common.NewVersion(beatVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +35,7 @@ func New(beatVersion string, esVersion string, index string, settings TemplateSe
 		esVersion = beatVersion
 	}
 
-	esV, err := NewVersion(esVersion)
+	esV, err := common.NewVersion(esVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -47,12 +46,10 @@ func New(beatVersion string, esVersion string, index string, settings TemplateSe
 		esVersion:   *esV,
 		settings:    settings,
 	}, nil
-
 }
 
 // Load the given input and generates the input based on it
 func (t *Template) Load(file string) (common.MapStr, error) {
-
 	fields, err := loadYaml(file)
 	if err != nil {
 		return nil, err
@@ -73,7 +70,6 @@ func (t *Template) GetName() string {
 // generate generates the full template
 // The default values are taken from the default variable.
 func (t *Template) generate(properties common.MapStr, dynamicTemplates []common.MapStr) common.MapStr {
-
 	// Add base dynamic template
 	var dynamicTemplateBase = common.MapStr{
 		"strings_as_keyword": common.MapStr{
@@ -125,7 +121,7 @@ func (t *Template) generate(properties common.MapStr, dynamicTemplates []common.
 	}
 
 	// ES 6 moved from template to index_patterns: https://github.com/elastic/elasticsearch/pull/21009
-	if t.esVersion.major >= 6 {
+	if t.esVersion.Major >= 6 {
 		basicStructure.Put("index_patterns", []string{t.GetName() + "-*"})
 	} else {
 		basicStructure.Put("template", t.GetName()+"-*")
