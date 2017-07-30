@@ -9,15 +9,16 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/elastic/beats/libbeat/common"
-	"github.com/elastic/beats/libbeat/logp"
+	"github.com/elastic/beats/libbeat/common/cfgwarn"
 	"github.com/elastic/beats/metricbeat/mb"
 )
 
 type CounterConfig struct {
-	InstanceLabel    string `config:"instance_label" validate:"required"`
-	MeasurementLabel string `config:"measurement_label" validate:"required"`
-	Query            string `config:"query" validate:"required"`
-	Format           string `config:"format"`
+	InstanceLabel    string  `config:"instance_label" validate:"required"`
+	InstanceName     *string `config:"instance_name"`
+	MeasurementLabel string  `config:"measurement_label" validate:"required"`
+	Query            string  `config:"query" validate:"required"`
+	Format           string  `config:"format"`
 }
 
 func init() {
@@ -33,7 +34,7 @@ type MetricSet struct {
 
 // New create a new instance of the MetricSet.
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
-	logp.Beta("The perfmon metricset is beta")
+	cfgwarn.Beta("The perfmon metricset is beta")
 
 	config := struct {
 		CounterConfig []CounterConfig `config:"perfmon.counters" validate:"required"`

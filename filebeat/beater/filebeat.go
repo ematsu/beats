@@ -8,6 +8,7 @@ import (
 
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
+	"github.com/elastic/beats/libbeat/common/cfgwarn"
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/beats/libbeat/monitoring"
 	"github.com/elastic/beats/libbeat/outputs/elasticsearch"
@@ -46,9 +47,17 @@ func New(b *beat.Beat, rawConfig *common.Config) (beat.Beater, error) {
 		return nil, fmt.Errorf("Error reading config file: %v", err)
 	}
 
+	err := cfgwarn.CheckRemoved5xSettings(rawConfig, "spool_size", "publish_async", "idle_timeout")
+	if err != nil {
+		return nil, err
+	}
+
 	moduleRegistry, err := fileset.NewModuleRegistry(config.Modules, b.Info.Version)
 	if err != nil {
 		return nil, err
+	}
+	if !moduleRegistry.Empty() {
+		logp.Info("Enabled modules/filesets: %s", moduleRegistry.InfoString())
 	}
 
 	moduleProspectors, err := moduleRegistry.GetProspectorConfigs()
