@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/elastic/beats/libbeat/common"
+	"github.com/elastic/go-ucfg/yaml"
 )
 
 func TestField(t *testing.T) {
@@ -13,6 +14,7 @@ func TestField(t *testing.T) {
 	assert.NoError(t, err)
 
 	falseVar := false
+	trueVar := true
 
 	tests := []struct {
 		field  Field
@@ -51,7 +53,7 @@ func TestField(t *testing.T) {
 		},
 		{
 			field:  Field{Type: "object", Enabled: &falseVar},
-			method: func(f Field) common.MapStr { return f.other() },
+			method: func(f Field) common.MapStr { return f.object() },
 			output: common.MapStr{
 				"type":    "object",
 				"enabled": false,
@@ -132,6 +134,41 @@ func TestField(t *testing.T) {
 				},
 			},
 		},
+		{
+			field:  Field{Dynamic: dynamicType{false}},
+			method: func(f Field) common.MapStr { return f.object() },
+			output: common.MapStr{
+				"dynamic": false, "type": "object",
+			},
+		},
+		{
+			field:  Field{Dynamic: dynamicType{true}},
+			method: func(f Field) common.MapStr { return f.object() },
+			output: common.MapStr{
+				"dynamic": true, "type": "object",
+			},
+		},
+		{
+			field:  Field{Dynamic: dynamicType{"strict"}},
+			method: func(f Field) common.MapStr { return f.object() },
+			output: common.MapStr{
+				"dynamic": "strict", "type": "object",
+			},
+		},
+		{
+			field:  Field{Type: "long", Index: &falseVar},
+			method: func(f Field) common.MapStr { return f.other() },
+			output: common.MapStr{
+				"type": "long", "index": false,
+			},
+		},
+		{
+			field:  Field{Type: "text", Index: &trueVar},
+			method: func(f Field) common.MapStr { return f.other() },
+			output: common.MapStr{
+				"type": "text", "index": true,
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -194,5 +231,65 @@ func TestDynamicTemplate(t *testing.T) {
 		dynamicTemplates = nil
 		test.method(test.field)
 		assert.Equal(t, test.output, dynamicTemplates[0])
+	}
+}
+
+func TestDynamicYaml(t *testing.T) {
+	tests := []struct {
+		input  []byte
+		output Field
+		error  bool
+	}{
+		{
+			input: []byte(`
+name: test
+dynamic: true
+`),
+			output: Field{
+				Name:    "test",
+				Dynamic: dynamicType{true},
+			},
+		},
+		{
+			input: []byte(`
+name: test
+dynamic: "true"
+`),
+			output: Field{
+				Name:    "test",
+				Dynamic: dynamicType{true},
+			},
+		},
+		{
+			input: []byte(`
+name: test
+dynamic: "blue"
+`),
+			error: true,
+		},
+		{
+			input: []byte(`
+name: test
+dynamic: "strict"
+`),
+			output: Field{
+				Name:    "test",
+				Dynamic: dynamicType{"strict"},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		keys := Field{}
+
+		cfg, err := yaml.NewConfig(test.input)
+		assert.NoError(t, err)
+		err = cfg.Unpack(&keys)
+
+		if err != nil {
+			assert.True(t, test.error)
+		} else {
+			assert.Equal(t, test.output.Dynamic, keys.Dynamic)
+		}
 	}
 }

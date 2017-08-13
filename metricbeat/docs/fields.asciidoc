@@ -3874,6 +3874,12 @@ The HTTP payload received
 json metricset
 
 
+[float]
+== server fields
+
+server
+
+
 [[exported-fields-jolokia]]
 == Jolokia fields
 
@@ -8789,6 +8795,14 @@ The disk space available to an unprivileged user in bytes.
 type: keyword
 
 The disk name. For example: `/dev/disk1`
+
+
+[float]
+=== `system.filesystem.type`
+
+type: keyword
+
+The disk type. For example: `ext4`
 
 
 [float]
